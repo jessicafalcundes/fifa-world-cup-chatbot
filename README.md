@@ -6,48 +6,48 @@ app_port: 8501
 
 # FIFA World Cup Chatbot
 
-Assistente multiagente para perguntas sobre Copa do Mundo (historia e Copa 2026), com RAG local, busca web e UI multilingue.
+Assistente multiagente para perguntas sobre Copa do Mundo (história e Copa 2026), com RAG local, busca web e UI multilíngue.
 
 <p align="center">
   <img src="front/triofifa.webp" alt="FIFA World Cup Chatbot" width="820" />
 </p>
 
-> Demo publica: https://huggingface.co/spaces/desafio-gensquads/Byte-Researcher
+> Demo pública: https://huggingface.co/spaces/jessicaf/fifa-world-cup-chatbot
 >
-> Sem `OPENAI_API_KEY` e `SERPER_API_KEY`, o app ainda inicia em modo demo/simulado para apresentar a interface e o fluxo do sistema. Para respostas reais com LLM, RAG semantico e busca web, configure as chaves de API.
+> Sem `OPENAI_API_KEY` e `SERPER_API_KEY`, o app ainda inicia em modo demo/simulado para apresentar a interface e o fluxo do sistema. Para respostas reais com LLM, RAG semântico e busca web, configure as chaves de API.
 
 ---
 
-## Sumario
+## Sumário
 
-- [Visao geral](#visao-geral)
+- [Visão geral](#visão-geral)
 - [Arquitetura](#arquitetura)
 - [Funcionalidades](#funcionalidades)
 - [Stack](#stack)
-- [Execucao local](#execucao-local)
-- [Execucao com Docker](#execucao-com-docker)
+- [Execução local](#execução-local)
+- [Execução com Docker](#execução-com-docker)
 - [Hugging Face Spaces](#hugging-face-spaces)
 - [Modo demo sem chaves](#modo-demo-sem-chaves)
 - [RAG e dados](#rag-e-dados)
 - [API](#api)
-- [Variaveis de ambiente](#variaveis-de-ambiente)
+- [Variáveis de ambiente](#variáveis-de-ambiente)
 - [Observabilidade (Phoenix)](#observabilidade-phoenix)
 - [Estrutura do projeto](#estrutura-do-projeto)
 - [Testes](#testes)
 - [Troubleshooting](#troubleshooting)
 
-## Visao geral
+## Visão geral
 
 - Roteamento inteligente entre RAG e Web (Serper).
 - Resposta estruturada em JSON (`answer`, `main_facts`, `related_topics`, `pages`, `links`).
-- UI Streamlit com entrada e saida por voz e traducao automatica.
+- UI Streamlit com entrada e saída por voz e tradução automática.
 - Observabilidade via OpenTelemetry + Phoenix.
 
 ## Arquitetura
 
 ```mermaid
 graph TD
-  U[Usuario] --> UI[Streamlit UI]
+  U[Usuário] --> UI[Streamlit UI]
   UI --> S[Supervisor]
   S --> SV[ScopeValidator]
   S -->|CrewAI| CE[CrewAI Executor]
@@ -74,9 +74,9 @@ Detalhes em `ARCHITECTURE.md`.
 
 - RAG local com embeddings + FAISS (`data/`).
 - Busca web em tempo real com Serper.
-- Orquestracao por CrewAI com fallback interno.
+- Orquestração por CrewAI com fallback interno.
 - Resposta estruturada em JSON.
-- UI Streamlit multilingue com voz (STT/TTS).
+- UI Streamlit multilíngue com voz (STT/TTS).
 - Observabilidade (OTel + Phoenix).
 
 ## Stack
@@ -89,7 +89,7 @@ Detalhes em `ARCHITECTURE.md`.
 - Serper API
 - OpenTelemetry + Phoenix
 
-## Execucao local
+## Execução local
 
 ### 1) Ambiente
 
@@ -99,13 +99,13 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2) Variaveis
+### 2) Variáveis
 
 ```bash
 cp .env.example .env
 ```
 
-Defina no minimo:
+Defina no mínimo:
 
 ```env
 OPENAI_API_KEY=...
@@ -129,7 +129,7 @@ uvicorn main:app --reload
 - Docs: `http://localhost:8000/docs`
 - Health: `http://localhost:8000/health`
 
-## Execucao com Docker
+## Execução com Docker
 
 ### Build
 
@@ -144,35 +144,35 @@ docker run --rm -p 8501:8501 --env-file .env fifa-world-cup-chatbot \
   streamlit run app.py --server.address=0.0.0.0 --server.port=8501 --server.headless=true
 ```
 
-Observacao: se alterar o arquivo de entrada da UI, ajuste o comando acima ou o `CMD` do `Dockerfile`.
+Observação: se alterar o arquivo de entrada da UI, ajuste o comando acima ou o `CMD` do `Dockerfile`.
 
 ## Hugging Face Spaces
 
-- O Spaces (SDK Docker) usa o `Dockerfile` do repositorio.
+- O Spaces (SDK Docker) usa o `Dockerfile` do repositório.
 - Garanta que o entrypoint esteja alinhado com o arquivo correto da UI (`app.py`).
 - Configure `OPENAI_API_KEY`, `SERPER_API_KEY` e, se usar Phoenix Cloud, `PHOENIX_API_KEY` em Settings > Variables and secrets.
 
 ## Modo demo sem chaves
 
-Se nenhuma chave de API estiver configurada, o projeto continua inicializando e usa respostas simuladas em partes do fluxo. Esse modo e suficiente para demonstrar:
+Se nenhuma chave de API estiver configurada, o projeto continua inicializando e usa respostas simuladas em partes do fluxo. Esse modo é suficiente para demonstrar:
 
 - Interface Streamlit.
-- Orquestracao entre supervisor, RAG e busca.
+- Orquestração entre supervisor, RAG e busca.
 - Estrutura das respostas.
 - Observabilidade local opcional.
 
 Limites do modo demo:
 
-- A geracao com OpenAI nao sera executada.
-- A busca web real via Serper nao sera executada.
-- A qualidade das respostas nao representa o modo completo com chaves configuradas.
+- A geração com OpenAI não será executada.
+- A busca web real via Serper não será executada.
+- A qualidade das respostas não representa o modo completo com chaves configuradas.
 
 ## RAG e dados
 
 Documentos base em `docs/`. Exemplo atual:
 - `docs/Seminar_DCSD_Foot_20170126.pdf`
 
-Os PDFs e o indice FAISS usam Git LFS. Depois de clonar o repositorio, se necessario:
+Os PDFs e o índice FAISS usam Git LFS. Depois de clonar o repositório, se necessário:
 
 ```bash
 git lfs install
@@ -228,9 +228,9 @@ Request:
 }
 ```
 
-## Variaveis de ambiente
+## Variáveis de ambiente
 
-Obrigatorias:
+Obrigatórias:
 
 ```env
 OPENAI_API_KEY=...
@@ -292,13 +292,13 @@ QUERY_REWRITE_ENABLED=true
 CONTEXT_TTL=3
 ```
 
-Seguranca: nunca versione chaves reais. Use `.env` local e mantenha segredos fora do repositorio.
+Segurança: nunca versione chaves reais. Use `.env` local e mantenha segredos fora do repositório.
 
 ## Observabilidade (Phoenix)
 
 ### Cloud
 
-Configure as variaveis de ambiente e rode a aplicacao normalmente.
+Configure as variáveis de ambiente e rode a aplicação normalmente.
 
 ### Local
 
@@ -308,7 +308,7 @@ bash scripts/phoenix.sh up
 
 Acesse: `http://localhost:6006`
 
-Nota: o `docker-compose.yml` deste repo e usado apenas para subir o Phoenix local.
+Nota: o `docker-compose.yml` deste repo é usado apenas para subir o Phoenix local.
 
 ## Estrutura do projeto
 
@@ -337,6 +337,6 @@ pytest -q
 ## Troubleshooting
 
 - `SERPER_API_KEY` ausente: Web Search entra em modo simulado.
-- FAISS ausente: RAG usa busca linear/hibrida.
-- `OPENAI_API_KEY` ausente: geracao LLM falha ou simula resposta.
-- Voz: verifique dependencias `SpeechRecognition`, `gTTS`, `pydub` e `audio-recorder-streamlit`.
+- FAISS ausente: RAG usa busca linear/híbrida.
+- `OPENAI_API_KEY` ausente: geração LLM falha ou simula resposta.
+- Voz: verifique dependências `SpeechRecognition`, `gTTS`, `pydub` e `audio-recorder-streamlit`.
